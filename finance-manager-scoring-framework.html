@@ -1,0 +1,541 @@
+<title>Finance Manager Scoring Framework</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --paper:#faf8f2;
+    --surface:#ffffff;
+    --ink:#12303a;
+    --ink-soft:#3d4f4c;
+    --muted:#6b7c76;
+    --teal:#00747e;
+    --teal-bright:#00969f;
+    --line:#dee6e0;
+    --line-strong:#c7d3cc;
+    --amber:#a8752a;
+    --green:#1e7a4c;
+    --bar-track:#e7ece8;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0e1b1a;
+      --surface:#132725;
+      --ink:#eef2ee;
+      --ink-soft:#c7d3cc;
+      --muted:#93a49d;
+      --teal:#2bb2ab;
+      --teal-bright:#4fd0c8;
+      --line:#28403c;
+      --line-strong:#345048;
+      --amber:#d99b4e;
+      --green:#4fb883;
+      --bar-track:#1c3330;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0e1b1a;
+    --surface:#132725;
+    --ink:#eef2ee;
+    --ink-soft:#c7d3cc;
+    --muted:#93a49d;
+    --teal:#2bb2ab;
+    --teal-bright:#4fd0c8;
+    --line:#28403c;
+    --line-strong:#345048;
+    --amber:#d99b4e;
+    --green:#4fb883;
+    --bar-track:#1c3330;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--paper);
+    color:var(--ink-soft);
+    font-family:"Source Serif 4", Georgia, "Times New Roman", serif;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{
+    font-family:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .sheet{
+    max-width:760px;
+    margin:0 auto;
+    padding:64px 28px 96px;
+  }
+
+  /* Letterhead */
+  .letterhead{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:24px;
+    padding-bottom:22px;
+    border-bottom:2px solid var(--ink);
+    margin-bottom:34px;
+  }
+  .brand{
+    font-family:"IBM Plex Mono";
+    font-size:12.5px;
+    letter-spacing:.14em;
+    font-weight:600;
+    color:var(--ink);
+    text-transform:uppercase;
+  }
+  .brand span{ color:var(--muted); font-weight:500; }
+  .doc-tag{
+    font-family:"IBM Plex Mono";
+    font-size:11.5px;
+    letter-spacing:.08em;
+    color:var(--teal);
+    text-transform:uppercase;
+    text-align:right;
+    white-space:nowrap;
+  }
+
+  h1{
+    font-family:"Source Serif 4";
+    font-weight:600;
+    font-size:clamp(28px, 4vw, 38px);
+    line-height:1.15;
+    color:var(--ink);
+    text-wrap:balance;
+    margin:0 0 6px;
+  }
+  .subrole{
+    font-size:18px;
+    color:var(--teal);
+    font-weight:600;
+    margin:0 0 18px;
+  }
+  .meta-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px 22px;
+    font-family:"IBM Plex Mono";
+    font-size:12.5px;
+    color:var(--muted);
+    padding-bottom:28px;
+    margin-bottom:28px;
+    border-bottom:1px solid var(--line);
+  }
+  .meta-row b{ color:var(--ink-soft); font-weight:600; }
+
+  .lede{
+    font-size:17px;
+    color:var(--ink-soft);
+    max-width:64ch;
+    margin:0 0 44px;
+  }
+  .lede em{ color:var(--ink); font-style:normal; font-weight:600; }
+
+  section{ margin-bottom:48px; }
+
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:18px;
+  }
+  .section-head .idx{
+    font-family:"IBM Plex Mono";
+    font-size:13px;
+    color:var(--teal-bright);
+    font-weight:600;
+  }
+  h2{
+    font-family:"Source Serif 4";
+    font-weight:600;
+    font-size:23px;
+    color:var(--ink);
+    margin:0;
+  }
+  .section-note{
+    font-family:"IBM Plex Mono";
+    font-size:12.5px;
+    color:var(--muted);
+    line-height:1.7;
+    max-width:60ch;
+    margin:-6px 0 22px;
+  }
+
+  /* Weighting ledger */
+  .ledger{
+    border-top:1px solid var(--ink);
+    border-bottom:2px solid var(--ink);
+  }
+  .ledger-head{
+    display:grid;
+    grid-template-columns:1fr 150px 110px;
+    gap:14px;
+    padding:9px 0;
+    font-family:"IBM Plex Mono";
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+    border-bottom:1px solid var(--line-strong);
+  }
+  .ledger-row{
+    display:grid;
+    grid-template-columns:1fr 150px 110px;
+    gap:14px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+    align-items:start;
+  }
+  .ledger-row:last-of-type{ border-bottom:1px solid var(--line-strong); }
+  .dim-name{
+    font-weight:600;
+    color:var(--ink);
+    font-size:16px;
+    margin-bottom:4px;
+  }
+  .dim-desc{
+    font-size:14.5px;
+    color:var(--muted);
+    line-height:1.55;
+  }
+  .weight-cell{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    padding-top:2px;
+  }
+  .weight-num{
+    font-family:"IBM Plex Mono";
+    font-size:17px;
+    font-weight:600;
+    color:var(--teal);
+    font-variant-numeric:tabular-nums;
+  }
+  .bar-track{
+    width:100%;
+    height:5px;
+    background:var(--bar-track);
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .bar-fill{
+    height:100%;
+    background:var(--teal);
+    border-radius:2px;
+  }
+  .assesses-label{
+    font-family:"IBM Plex Mono";
+    font-size:10.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .ledger-total{
+    display:grid;
+    grid-template-columns:1fr 150px 110px;
+    gap:14px;
+    padding:14px 0 6px;
+    align-items:center;
+  }
+  .ledger-total .label{
+    font-family:"IBM Plex Mono";
+    font-weight:600;
+    letter-spacing:.08em;
+    font-size:12.5px;
+    color:var(--ink);
+    text-transform:uppercase;
+  }
+  .ledger-total .weight-num{ font-size:19px; }
+
+  /* Questions */
+  .track-label{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:"IBM Plex Mono";
+    font-size:11.5px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--surface);
+    background:var(--ink);
+    padding:5px 11px;
+    border-radius:3px;
+    margin:0 0 20px;
+  }
+  .track-label.behavioural{ background:var(--teal); }
+
+  .qcard{
+    display:grid;
+    grid-template-columns:40px 1fr;
+    gap:16px;
+    padding:22px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .qcard:first-of-type{ border-top:1px solid var(--line); }
+  .qnum{
+    font-family:"IBM Plex Mono";
+    font-size:20px;
+    font-weight:600;
+    color:var(--line-strong);
+    line-height:1.3;
+  }
+  .qtext{
+    font-size:17px;
+    color:var(--ink);
+    font-weight:500;
+    line-height:1.5;
+    margin:0 0 12px;
+  }
+  .maps-to{
+    font-family:"IBM Plex Mono";
+    font-size:10.5px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color:var(--teal);
+    margin:0 0 12px;
+  }
+  .criteria{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+  }
+  .criteria li{
+    font-family:"IBM Plex Mono";
+    font-size:13.5px;
+    color:var(--ink-soft);
+    padding-left:20px;
+    position:relative;
+    line-height:1.5;
+  }
+  .criteria li::before{
+    content:"—";
+    position:absolute;
+    left:0;
+    color:var(--teal);
+  }
+
+  /* Sign-off */
+  .signoff{
+    margin-top:56px;
+    padding-top:28px;
+    border-top:2px solid var(--ink);
+  }
+  .signoff p{
+    font-style:italic;
+    color:var(--ink);
+    font-size:16.5px;
+    max-width:56ch;
+    margin:0 0 30px;
+  }
+  .sign-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:28px;
+  }
+  .sign-field{ display:flex; flex-direction:column; gap:26px; }
+  .sign-field .rule{
+    border-bottom:1px dotted var(--line-strong);
+    height:1px;
+  }
+  .sign-field .field-label{
+    font-family:"IBM Plex Mono";
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  .colophon{
+    margin-top:64px;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+    font-family:"IBM Plex Mono";
+    font-size:11px;
+    color:var(--muted);
+    text-align:center;
+    letter-spacing:.03em;
+  }
+
+  @media (max-width:600px){
+    .ledger-head, .ledger-row, .ledger-total{ grid-template-columns:1fr 88px; }
+    .ledger-head span:last-child{ display:none; }
+    .assesses-label{ display:none; }
+    .sign-grid{ grid-template-columns:1fr; }
+    .qcard{ grid-template-columns:28px 1fr; }
+  }
+</style>
+
+<div class="sheet">
+
+  <div class="letterhead">
+    <div class="brand">Raise <span>+</span> Recruit <span>— built for charities, not for profit</span></div>
+    <div class="doc-tag">For approval</div>
+  </div>
+
+  <h1>Interview Scoring Framework</h1>
+  <p class="subrole">Finance Manager — Carers Support Bristol &amp; South Gloucestershire</p>
+  <div class="meta-row">
+    <span><b>Prepared by</b> John, Raise + Recruit</span>
+    <span><b>For approval by</b> Mike, Chief Executive</span>
+    <span><b>Date</b> September 2026</span>
+  </div>
+
+  <p class="lede">Every candidate for this role is scored against the ten weighted dimensions below. Each candidate's CV, first interview and competency interview are assessed dimension‑by‑dimension and combined into <em>a single weighted total out of 100</em>. The weighting reflects what you and Stuart described in the original briefing — untangling the restricted and unrestricted funding position, rolling cash flow visibility, and someone who advises the Board rather than just reports the numbers — alongside the job description's essential and desirable criteria.</p>
+
+  <section>
+    <div class="section-head"><span class="idx">01</span><h2>Weighting</h2></div>
+
+    <div class="ledger">
+      <div class="ledger-head">
+        <span>Dimension</span><span>What it assesses</span><span>Weight</span>
+      </div>
+
+      <!-- rows injected below -->
+      <div id="ledger-rows"></div>
+
+      <div class="ledger-total">
+        <span class="label">Total</span><span></span>
+        <div class="weight-cell"><span class="weight-num">100%</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="idx">02</span><h2>Competency‑Based Interview Questions</h2></div>
+    <p class="section-note">Ten questions for the competency‑stage interview — five functional (how they'd approach a specific task) and five behavioural (a real example, assessed against the STAR format: situation, task, action, result). Each maps to one dimension above.</p>
+
+    <span class="track-label">Functional</span>
+    <div id="functional-qs"></div>
+
+    <span class="track-label behavioural" style="margin-top:36px;">Behavioural</span>
+    <div id="behavioural-qs"></div>
+  </section>
+
+  <div class="signoff">
+    <p>Please confirm the weighting and question set above are approved before candidate scoring begins.</p>
+    <div class="sign-grid">
+      <div class="sign-field"><div class="rule"></div><span class="field-label">Approved by</span></div>
+      <div class="sign-field"><div class="rule"></div><span class="field-label">Date</span></div>
+    </div>
+  </div>
+
+  <div class="colophon">Raise + Recruit &nbsp;·&nbsp; raiseandrecruit.org.uk &nbsp;·&nbsp; john@raiseandrecruit.org.uk</div>
+
+</div>
+
+<script>
+  const dims = [
+    ["Financial Control, Systems & Restricted Fund Management", 25, "Monthly management accounts, balance sheet reconciliations, financial controls, and correctly separating restricted, designated and unrestricted funds."],
+    ["Cash Flow Forecasting, Investments & Treasury", 15, "Producing rolling cash flow forecasts, and reviewing investment, deposit and reserves decisions consistent with the charity's risk appetite."],
+    ["Board & CEO Advisory", 15, "Interpreting the numbers into clear recommendations for the Chief Executive, Treasurer and Board — not just reporting what has happened."],
+    ["Budget Preparation, Grant & Full Cost Recovery Reporting", 10, "Leading the annual budgeting process and preparing Full Cost Recovery costings for funding bids, grant applications and contract tenders."],
+    ["Payroll & Line Management of the Finance Officer", 10, "Joint oversight of payroll, pensions and PAYE/NI with the Finance Officer, plus day‑to‑day supervision, appraisal and development of that role."],
+    ["Systems, IT & Financial Policy Development", 8, "Reviewing and developing accounting software, financial policies, procedures and internal controls to reflect best practice."],
+    ["Autonomy, Judgement & Building from a Blank Slate", 7, "Quality of independent judgement with minimal supervision, and evidence of building financial structure where little currently exists."],
+    ["Values, Communication & Culture Fit", 5, "Ability to present complex financial information clearly to non‑finance colleagues, and genuine alignment with a values‑driven environment."],
+    ["Practical Fit & Logistics", 3, "Availability for the stated hours, hybrid working pattern, and salary expectations against the advertised range."],
+    ["Compliance & Statutory Obligations", 2, "Working knowledge of Companies House, Charity Commission, Gift Aid, VAT and data protection obligations relevant to the role."],
+  ];
+
+  const maxW = Math.max(...dims.map(d => d[1]));
+  const rowsHtml = dims.map(([name, w, desc]) => `
+    <div class="ledger-row">
+      <div>
+        <div class="dim-name">${name}</div>
+      </div>
+      <div class="assesses-label" style="align-self:start;">
+        <span class="dim-desc" style="font-family:'Source Serif 4'; font-size:14.5px; text-transform:none; letter-spacing:0;">${desc}</span>
+      </div>
+      <div class="weight-cell">
+        <span class="weight-num">${w}%</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${(w/maxW*100).toFixed(0)}%"></div></div>
+      </div>
+    </div>
+  `).join("");
+  document.getElementById("ledger-rows").innerHTML = rowsHtml;
+
+  const functional = [
+    ["Walk me through how you'd untangle a set of accounts where restricted and unrestricted income has been mixed for some time — what would you check first, and in what order would you correct it?", "Maps to — Financial Control & Restricted Fund Management", [
+      "Clear, logical order of checks",
+      "Names specific checks (fund coding, income allocation, prior‑year restatement)",
+      "Mentions engaging the Treasurer, Board or auditors appropriately",
+      "Comfortable prioritising against real urgency, not just theory",
+    ]],
+    ["Walk me through how you'd build a rolling cash flow forecast from scratch for an organisation like Carers Support BSG, where staff costs are the dominant expense and some income depends on council contracts.", "Maps to — Cash Flow Forecasting, Investments & Treasury", [
+      "Clear, logical process end to end",
+      "Explicitly models wages/payroll timing as the biggest cost driver",
+      "References funding and contract income timing and risk",
+      "Mentions monitoring actual against forecast over time",
+    ]],
+    ["Talk me through how you'd prepare a Full Cost Recovery model for a funding bid or a council contract renewal.", "Maps to — Budget Preparation, Grant & FCR Reporting", [
+      "Understands direct versus overhead cost allocation",
+      "References prior‑year actuals as a starting point",
+      "Involves budget holders or programme leads in the process",
+      "Links the model back to reserves and long‑term sustainability",
+    ]],
+    ["Walk me through how you'd manage a payroll run jointly with a Finance Officer — including pension auto‑enrolment and PAYE/NI submissions — while still developing them in the role.", "Maps to — Payroll & Line Management of the Finance Officer", [
+      "Clear, logical order of checks",
+      "Names specific checks (BACS data, RTI submission, pension contributions)",
+      "Describes how oversight and delegation are balanced",
+      "Mentions a review or second‑check step",
+    ]],
+    ["Talk me through how you'd review whether the current accounting software is still right for this organisation, and what you'd look at before recommending a change.", "Maps to — Systems, IT & Financial Policy Development", [
+      "Structured evaluation approach, not just a personal preference",
+      "References cost, complexity, migration risk and staff capability",
+      "Considers reporting and CRM integration needs",
+      "Doesn't rush to change a system for its own sake",
+    ]],
+  ];
+
+  const behavioural = [
+    ["Tell me about a specific time you gave a Board or Chief Executive a financial recommendation they didn't want to hear. What did you say, and what happened?", "Maps to — Board & CEO Advisory", [
+      "One specific, real example",
+      "Clear, evidence‑based recommendation",
+      "Handled pushback directly and professionally",
+      "Outcome described, good or bad",
+    ]],
+    ["Tell me about a time you had to build a financial system, process or report from close to nothing, with minimal supervision. What did you actually do first?", "Maps to — Autonomy, Judgement & Building from a Blank Slate", [
+      "One specific, real example",
+      "Concrete first actions described",
+      "Worked with genuine autonomy",
+      "Shows a completed, working result",
+    ]],
+    ["Tell me about a time you had to explain a complex financial or fund‑accounting issue to people who aren't finance specialists — Trustees, a funder, or colleagues. How did you make it land?", "Maps to — Values, Communication & Culture Fit", [
+      "One specific, real example",
+      "Explains the method used to simplify it (analogy, visual, plain language)",
+      "Checked understanding rather than just delivering a monologue",
+      "Confirms the audience actually acted on it",
+    ]],
+    ["Tell me about a time you managed someone whose performance wasn't where it needed to be. What did you say to them, and what happened?", "Maps to — Payroll & Line Management of the Finance Officer", [
+      "Real, specific example",
+      "Handled directly and fairly",
+      "Shows follow‑through",
+      "Outcome described, good or bad",
+    ]],
+    ["Tell me about a time you went beyond what your job description strictly required, in a charity or values‑driven organisation. What made you do it?", "Maps to — Values, Communication & Culture Fit", [
+      "One specific, real example",
+      "Genuine, not generic",
+      "Connects to organisational mission, not personal gain",
+      "Sustainable behaviour, not a one‑off act",
+    ]],
+  ];
+
+  function renderQs(list, startAt, mountId){
+    const html = list.map(([q, mapsTo, crit], i) => `
+      <div class="qcard">
+        <div class="qnum">${String(startAt + i).padStart(2,"0")}</div>
+        <div>
+          <p class="qtext">${q}</p>
+          <div class="maps-to">${mapsTo}</div>
+          <ul class="criteria">${crit.map(c => `<li>${c}</li>`).join("")}</ul>
+        </div>
+      </div>
+    `).join("");
+    document.getElementById(mountId).innerHTML = html;
+  }
+  renderQs(functional, 1, "functional-qs");
+  renderQs(behavioural, 6, "behavioural-qs");
+</script>
